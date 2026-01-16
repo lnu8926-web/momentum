@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, Search } from "lucide-react";
 
-import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/supabase/auth";
 import toast from "react-hot-toast";
 import {
@@ -98,7 +97,7 @@ export function Header({ onMenuClick, user }: HeaderProps) {
                       await signOut();
                       toast.success("로그아웃 되었습니다");
                       window.location.href = "/login";
-                    } catch (error) {
+                    } catch {
                       toast.error("로그아웃 실패");
                     }
                   }}

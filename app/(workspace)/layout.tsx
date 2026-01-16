@@ -1,37 +1,37 @@
-"use client";
+import { createClient } from "@/lib/supabase/server";
+import { WorkspaceShell } from "@/components/layout/WorkspaceShell";
 
-import { useState } from "react";
-import { Header } from "@/components/layout/Header";
-import { Sidebar } from "@/components/layout/Sidebar";
-
-export default function WorkspaceLayout({
+export default async function WorkspaceLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const supabase = await createClient();
 
-  // TODO: 인증 로직 추가
-  // const supabase = createClient();
-  // const { data: { user } } = await supabase.auth.getUser();
-  // if (!user) redirect("/login");
+  // 사용자 정보 가져오기 (미들웨어에서 이미 인증 체크함)
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // 사용자 프로필 조회
+  const { data: profile } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", user?.id)
+    .single();
 
   return (
-    <div className="flex h-screen flex-col">
-      <Header
-        user={{
-          name: "Test User",
-          email: "test@example.com",
-        }}
-        onMenuClick={() => setSidebarOpen(true)}
-      />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar 
-          isOpen={sidebarOpen} 
-          onClose={() => setSidebarOpen(false)} 
-        />
-        <main className="flex-1 overflow-y-auto">{children}</main>
-      </div>
-    </div>
+    <WorkspaceShell
+      user={
+        profile
+          ? {
+              name: profile.name,
+              email: profile.email,
+            }
+          : null
+      }
+    >
+      {children}
+    </WorkspaceShell>
   );
 }
