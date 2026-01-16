@@ -3,31 +3,21 @@ import { createClient } from "@/lib/supabase/client";
 export async function signUp(email: string, password: string, name: string) {
   const supabase = createClient();
 
-  // 1. Auth 계정 생성
+  // 1. Auth 계정 생성 (메타데이터에 name 포함)
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: {
+        name,
+      },
+    },
   });
 
   if (authError) throw authError;
   if (!authData.user) throw new Error("Failed to create user");
 
-  // 2. users 테이블에 프로필 생성
-  const { error: profileError } = await supabase.from("users").insert({
-    id: authData.user.id,
-    email: authData.user.email!,
-    name,
-  });
-
-  if (profileError) throw profileError;
-
-  // 3. 기본 워크스페이스 생성
-  const { error: workspaceError } = await supabase.from("workspaces").insert({
-    name: "${name}'s Workspace",
-    owner_id: authData.user.id,
-  });
-
-  if (workspaceError) throw workspaceError;
+  // users 테이블은 트리거가 자동으로 생성함
 
   return authData;
 }
