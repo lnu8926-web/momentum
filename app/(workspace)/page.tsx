@@ -2,14 +2,14 @@ export default function HomePage() {
   return (
     <div className="container py-10">
       <div className="space-y-4">
-        <div>
+        <div className="space-y-2 ml-5">
           <h1 className="text-3xl font-bold">Welcome to Momentum</h1>
           <p className="text-muted-foreground">
             Your all-in-one collaboration workspace
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 ml-5">
           {/* 임시 카드들 */}
           <div className="rounded-lg border p-6">
             <h3 className="font-semibold">Quick Start</h3>
